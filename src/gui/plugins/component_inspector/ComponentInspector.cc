@@ -65,6 +65,7 @@
 #include "ignition/gazebo/components/SourceFilePath.hh"
 #include "ignition/gazebo/components/SphericalCoordinates.hh"
 #include "ignition/gazebo/components/Static.hh"
+#include "ignition/gazebo/components/SystemInfo.hh"
 #include "ignition/gazebo/components/ThreadPitch.hh"
 #include "ignition/gazebo/components/Transparency.hh"
 #include "ignition/gazebo/components/Visual.hh"
@@ -335,6 +336,33 @@ void ignition::gazebo::setData(QStandardItem *_item,
     QVariant(_data.ElevationReference()),
     QVariant(_data.HeadingOffset().Degree()),
   }), ComponentsModel::RoleNames().key("data"));
+}
+
+//////////////////////////////////////////////////
+template<>
+void ignition::gazebo::setData(QStandardItem *_item,
+    const msgs::Plugin_V &_data)
+{
+  if (nullptr == _item)
+    return;
+
+  _item->setData(QString("SystemInfo"),
+      ComponentsModel::RoleNames().key("dataType"));
+
+  QList<QVariant> dataList;
+//ignerr << _data.plugins().size() << std::endl;
+  for (int i = 0; i < _data.plugins().size(); ++i)
+  {
+ignerr << _data.plugins(i).name() << std::endl;
+    dataList.push_back(
+        QVariant(QString::fromStdString(_data.plugins(i).name())));
+    dataList.push_back(
+        QVariant(QString::fromStdString(_data.plugins(i).filename())));
+    dataList.push_back(
+        QVariant(QString::fromStdString(_data.plugins(i).innerxml())));
+  }
+  _item->setData(dataList,
+      ComponentsModel::RoleNames().key("data"));
 }
 
 //////////////////////////////////////////////////
@@ -760,6 +788,12 @@ void ComponentInspector::Update(const UpdateInfo &,
     else if (typeId == components::Static::typeId)
     {
       auto comp = _ecm.Component<components::Static>(this->dataPtr->entity);
+      if (comp)
+        setData(item, comp->Data());
+    }
+    else if (typeId == components::SystemInfo::typeId)
+    {
+      auto comp = _ecm.Component<components::SystemInfo>(this->dataPtr->entity);
       if (comp)
         setData(item, comp->Data());
     }
