@@ -34,6 +34,7 @@
 
 #include <ignition/msgs/light.pb.h>
 
+#include "Types.hh"
 Q_DECLARE_METATYPE(ignition::gazebo::ComponentTypeId)
 
 namespace ignition
@@ -367,6 +368,20 @@ namespace gazebo
 
     /// \brief Notify that paused has changed.
     signals: void PausedChanged();
+
+    /// \brief Add a callback that will be executed during the next Update.
+    /// \param[in] _cb The callback to run.
+    public: void AddUpdateCallback(inspector::UpdateCallback _cb);
+
+    /// \brief Add a component creator. A component creator is
+    /// responsible for selecting the correct QML and setting the
+    /// appropriate data for a ComponentTypeId.
+    /// \param[in] _id The component type id to associate with the creation
+    /// function.
+    /// \param[in] _creatorFn Function to call in order to create the QML
+    /// component.
+    public: void AddCreateCallback(ComponentTypeId _id,
+                inspector::CreateCallback _cb);
 
     /// \internal
     /// \brief Pointer to private data.

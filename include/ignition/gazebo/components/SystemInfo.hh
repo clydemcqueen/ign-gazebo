@@ -20,6 +20,7 @@
 #include <ignition/msgs/plugin_v.pb.h>
 #include <ignition/gazebo/components/Factory.hh>
 #include <ignition/gazebo/components/Component.hh>
+#include <ignition/gazebo/components/Serialization.hh>
 #include <ignition/gazebo/config.hh>
 
 namespace ignition
@@ -33,7 +34,8 @@ namespace components
   /// \brief This component holds information about all the systems that are
   /// attached to an entity. The content of each system is loaded at startup and
   /// isn't modified throughout simulation.
-  using SystemInfo = Component<msgs::Plugin_V, class SystemInfoTag>;
+  using SystemInfo = Component<msgs::Plugin_V, class SystemInfoTag,
+      serializers::MsgSerializer>;
   IGN_GAZEBO_REGISTER_COMPONENT("ign_gazebo_components.SystemInfo", SystemInfo)
 }
 }

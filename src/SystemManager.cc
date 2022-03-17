@@ -134,9 +134,6 @@ void SystemManager::AddSystemImpl(
   auto pluginMsg = systemInfoMsg.add_plugins();
   pluginMsg->CopyFrom(convert<msgs::Plugin>(*_sdf.get()));
 
-
-ignerr << systemInfoMsg.plugins().size() << std::endl;
-
   this->entityCompMgr->SetComponentData<components::SystemInfo>(_entity,
       systemInfoMsg);
   this->entityCompMgr->SetChanged(_entity, components::SystemInfo::typeId);

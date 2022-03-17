@@ -76,6 +76,7 @@
 #include "ignition/gazebo/gui/GuiEvents.hh"
 
 #include "ComponentInspector.hh"
+#include "SystemInfo.hh"
 
 namespace ignition::gazebo
 {
@@ -110,6 +111,15 @@ namespace ignition::gazebo
 
     /// \brief Transport node for making command requests
     public: transport::Node node;
+
+    /// \brief
+    public: std::unique_ptr<inspector::SystemInfo> systemInfo;
+
+    /// \brief Set of callbacks to execute during the Update function.
+    public: std::vector<inspector::UpdateCallback> updateCallbacks;
+
+    /// \brief A map of component type to creation functions.
+    public: std::map<ComponentTypeId, inspector::CreateCallback> createCallbacks;
   };
 }
 
@@ -339,33 +349,6 @@ void ignition::gazebo::setData(QStandardItem *_item,
 }
 
 //////////////////////////////////////////////////
-template<>
-void ignition::gazebo::setData(QStandardItem *_item,
-    const msgs::Plugin_V &_data)
-{
-  if (nullptr == _item)
-    return;
-
-  _item->setData(QString("SystemInfo"),
-      ComponentsModel::RoleNames().key("dataType"));
-
-  QList<QVariant> dataList;
-//ignerr << _data.plugins().size() << std::endl;
-  for (int i = 0; i < _data.plugins().size(); ++i)
-  {
-ignerr << _data.plugins(i).name() << std::endl;
-    dataList.push_back(
-        QVariant(QString::fromStdString(_data.plugins(i).name())));
-    dataList.push_back(
-        QVariant(QString::fromStdString(_data.plugins(i).filename())));
-    dataList.push_back(
-        QVariant(QString::fromStdString(_data.plugins(i).innerxml())));
-  }
-  _item->setData(dataList,
-      ComponentsModel::RoleNames().key("data"));
-}
-
-//////////////////////////////////////////////////
 void ignition::gazebo::setUnit(QStandardItem *_item, const std::string &_unit)
 {
   if (nullptr == _item)
@@ -482,6 +465,9 @@ void ComponentInspector::LoadConfig(const tinyxml2::XMLElement *)
   // Connect model
   this->Context()->setContextProperty(
       "ComponentsModel", &this->dataPtr->componentsModel);
+
+  //
+  this->dataPtr->systemInfo = std::make_unique<inspector::SystemInfo>(this);
 }
 
 //////////////////////////////////////////////////
@@ -791,12 +777,6 @@ void ComponentInspector::Update(const UpdateInfo &,
       if (comp)
         setData(item, comp->Data());
     }
-    else if (typeId == components::SystemInfo::typeId)
-    {
-      auto comp = _ecm.Component<components::SystemInfo>(this->dataPtr->entity);
-      if (comp)
-        setData(item, comp->Data());
-    }
     else if (typeId == components::SelfCollide::typeId)
     {
       auto comp =
@@ -920,6 +900,12 @@ void ComponentInspector::Update(const UpdateInfo &,
         setData(item, comp->Data());
       }
     }
+    else if (this->dataPtr->createCallbacks.find(typeId) !=
+          this->dataPtr->createCallbacks.end())
+    {
+      this->dataPtr->createCallbacks[typeId](
+          _ecm, this->dataPtr->entity, item);
+    }
   }
 
   // Remove components no longer present - list items to remove
@@ -941,6 +927,24 @@ void ComponentInspector::Update(const UpdateInfo &,
         Qt::QueuedConnection,
         Q_ARG(ignition::gazebo::ComponentTypeId, typeId));
   }
+
+  // Process all of the update callbacks
+  for (auto cb : this->dataPtr->updateCallbacks)
+    cb(_ecm);
+  this->dataPtr->updateCallbacks.clear();
+}
+
+/////////////////////////////////////////////////
+void ComponentInspector::AddUpdateCallback(inspector::UpdateCallback _cb)
+{
+  this->dataPtr->updateCallbacks.push_back(_cb);
+}
+
+/////////////////////////////////////////////////
+void ComponentInspector::AddCreateCallback(ComponentTypeId _id,
+    inspector::CreateCallback _cb)
+{
+  this->dataPtr->createCallbacks[_id] = _cb;
 }
 
 /////////////////////////////////////////////////

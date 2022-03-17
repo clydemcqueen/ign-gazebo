@@ -24,7 +24,7 @@ import "qrc:/ComponentInspector"
 
 Rectangle {
   id: stringComponent
-  height: typeHeader.height
+  height: header.height + content.height
   width: componentInspector.width
   color: index % 2 == 0 ? lightGrey : darkGrey
 
@@ -34,49 +34,53 @@ Rectangle {
   // Horizontal margins
   property int margin: 5
 
-  RowLayout {
+  Column {
     anchors.fill: parent
 
-    Item {
-      height: parent.height
-      width: margin
+    ExpandingTypeHeader {
+      id: header
     }
 
-    Item {
-      height: parent.height
-      width: indentation
-    }
+    // Content
+    Rectangle {
+      id: content
+      property bool show: false
+      width: parent.width
+      height: show ? column.height : 0
+      clip: true
+      color: "transparent"
 
-    TypeHeader {
-      id: typeHeader
-    }
-
-    Text {
-      id: name
-      text: model.data[0]
-      Layout.fillWidth: true
-      horizontalAlignment: Text.AlignRight
-      color: Material.theme == Material.Light ? "black" : "white"
-      font.pointSize: 12
-      elide: Text.ElideLeft
-
-      ToolTip {
-        visible: ma.containsMouse
-        delay: Qt.styleHints.mousePressAndHoldInterval
-        text: name.text
-        enter: null
-        exit: null
+      Behavior on height {
+        NumberAnimation {
+          duration: 200;
+          easing.type: Easing.InOutQuad
+        }
       }
-      MouseArea {
-        id: ma
-        anchors.fill: name
-        hoverEnabled: true
-      }
-    }
 
-    Item {
-      height: parent.height
-      width: margin
+      // ListView {
+      //   id: column
+      //   height: 100
+      //   model: parent.model
+
+      //   delegate: Text {
+      //     height: 40
+      //     text: model.data[0]
+      //     leftPadding: 5
+      //     color: Material.theme == Material.Light ? "#444444" : "#bbbbbb"
+      //     font.pointSize: 12
+      //     anchors.centerIn: parent
+      //   }
+      // }
+
+      Text {
+        id: column
+        height: 40
+        text: model.data[0]
+        leftPadding: 5
+        color: Material.theme == Material.Light ? "#444444" : "#bbbbbb"
+        font.pointSize: 12
+        anchors.centerIn: parent
+      }
     }
   }
 }
