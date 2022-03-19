@@ -243,7 +243,7 @@ Rectangle {
 
     delegate: Loader {
       id: loader
-      property var theData: model.componentData
+      property var theData: model.data
       source: delegateQml(model)
     }
   }

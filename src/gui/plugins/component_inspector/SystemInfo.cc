@@ -59,7 +59,7 @@ SystemInfo::SystemInfo(ComponentInspector *_inspector)
     }
 
     _item->setData(pluginList,
-        ComponentsModel::RoleNames().key("componentData"));
+        ComponentsModel::RoleNames().key("data"));
   };
 
   this->inspector->AddCreateCallback(
