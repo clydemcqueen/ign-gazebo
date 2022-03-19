@@ -60,7 +60,7 @@ Rectangle {
       ListView {
         id: column
         height: 200
-        model: theData
+        model: componentData
 
         delegate: Text {
           height: 40
