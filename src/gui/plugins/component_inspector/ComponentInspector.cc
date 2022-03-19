@@ -142,7 +142,7 @@ void ignition::gazebo::setData(QStandardItem *_item, const math::Pose3d &_data)
     QVariant(_data.Rot().Roll()),
     QVariant(_data.Rot().Pitch()),
     QVariant(_data.Rot().Yaw())
-  }), ComponentsModel::RoleNames().key("data"));
+  }), ComponentsModel::RoleNames().key("componentData"));
 }
 
 //////////////////////////////////////////////////
@@ -190,7 +190,7 @@ void ignition::gazebo::setData(QStandardItem *_item, const msgs::Light &_data)
     QVariant(_data.spot_falloff()),
     QVariant(_data.intensity()),
     QVariant(lightType)
-  }), ComponentsModel::RoleNames().key("data"));
+  }), ComponentsModel::RoleNames().key("componentData"));
 }
 
 //////////////////////////////////////////////////
@@ -207,7 +207,7 @@ void ignition::gazebo::setData(QStandardItem *_item,
     QVariant(_data.X()),
     QVariant(_data.Y()),
     QVariant(_data.Z())
-  }), ComponentsModel::RoleNames().key("data"));
+  }), ComponentsModel::RoleNames().key("componentData"));
 }
 
 //////////////////////////////////////////////////
@@ -220,7 +220,7 @@ void ignition::gazebo::setData(QStandardItem *_item, const std::string &_data)
   _item->setData(QString("String"),
       ComponentsModel::RoleNames().key("dataType"));
   _item->setData(QString::fromStdString(_data),
-      ComponentsModel::RoleNames().key("data"));
+      ComponentsModel::RoleNames().key("componentData"));
 }
 
 //////////////////////////////////////////////////
@@ -234,7 +234,7 @@ void ignition::gazebo::setData(QStandardItem *_item,
   _item->setData(QString("Raw"),
       ComponentsModel::RoleNames().key("dataType"));
   _item->setData(QString::fromStdString(_data.str()),
-      ComponentsModel::RoleNames().key("data"));
+      ComponentsModel::RoleNames().key("componentData"));
 }
 
 //////////////////////////////////////////////////
@@ -246,7 +246,7 @@ void ignition::gazebo::setData(QStandardItem *_item, const bool &_data)
 
   _item->setData(QString("Boolean"),
       ComponentsModel::RoleNames().key("dataType"));
-  _item->setData(_data, ComponentsModel::RoleNames().key("data"));
+  _item->setData(_data, ComponentsModel::RoleNames().key("componentData"));
 }
 
 //////////////////////////////////////////////////
@@ -258,7 +258,7 @@ void ignition::gazebo::setData(QStandardItem *_item, const int &_data)
 
   _item->setData(QString("Integer"),
       ComponentsModel::RoleNames().key("dataType"));
-  _item->setData(_data, ComponentsModel::RoleNames().key("data"));
+  _item->setData(_data, ComponentsModel::RoleNames().key("componentData"));
 }
 
 //////////////////////////////////////////////////
@@ -277,7 +277,7 @@ void ignition::gazebo::setData(QStandardItem *_item, const double &_data)
 
   _item->setData(QString("Float"),
       ComponentsModel::RoleNames().key("dataType"));
-  _item->setData(_data, ComponentsModel::RoleNames().key("data"));
+  _item->setData(_data, ComponentsModel::RoleNames().key("componentData"));
 }
 
 //////////////////////////////////////////////////
@@ -292,7 +292,7 @@ void ignition::gazebo::setData(QStandardItem *_item, const sdf::Physics &_data)
   _item->setData(QList({
     QVariant(_data.MaxStepSize()),
     QVariant(_data.RealTimeFactor())
-  }), ComponentsModel::RoleNames().key("data"));
+  }), ComponentsModel::RoleNames().key("componentData"));
 }
 
 //////////////////////////////////////////////////
@@ -322,7 +322,7 @@ void ignition::gazebo::setData(QStandardItem *_item,
     QVariant(_data.Emissive().G() * 255),
     QVariant(_data.Emissive().B() * 255),
     QVariant(_data.Emissive().A() * 255)
-  }), ComponentsModel::RoleNames().key("data"));
+  }), ComponentsModel::RoleNames().key("componentData"));
 
   // TODO(anyone) Only shows colors of material,
   // need to add others (e.g., pbr)
@@ -345,7 +345,7 @@ void ignition::gazebo::setData(QStandardItem *_item,
     QVariant(_data.LongitudeReference().Degree()),
     QVariant(_data.ElevationReference()),
     QVariant(_data.HeadingOffset().Degree()),
-  }), ComponentsModel::RoleNames().key("data"));
+  }), ComponentsModel::RoleNames().key("componentData"));
 }
 
 //////////////////////////////////////////////////
@@ -438,7 +438,7 @@ QHash<int, QByteArray> ComponentsModel::RoleNames()
           std::pair(102, "shortName"),
           std::pair(103, "dataType"),
           std::pair(104, "unit"),
-          std::pair(105, "data"),
+          std::pair(105, "componentData"),
           std::pair(106, "entity")};
 }
 

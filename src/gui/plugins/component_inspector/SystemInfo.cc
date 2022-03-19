@@ -45,18 +45,21 @@ SystemInfo::SystemInfo(ComponentInspector *_inspector)
     _item->setData(QString("SystemInfo"),
         ComponentsModel::RoleNames().key("dataType"));
 
-    QList<QVariant> dataList;
+    QList<QVariant> pluginList;
     for (int i = 0; i < msg.plugins().size(); ++i)
     {
+      QList<QVariant> dataList;
       dataList.push_back(
           QVariant(QString::fromStdString(msg.plugins(i).name())));
       dataList.push_back(
           QVariant(QString::fromStdString(msg.plugins(i).filename())));
       dataList.push_back(
           QVariant(QString::fromStdString(msg.plugins(i).innerxml())));
+      pluginList.push_back(dataList);
     }
-    _item->setData(dataList,
-        ComponentsModel::RoleNames().key("data"));
+
+    _item->setData(pluginList,
+        ComponentsModel::RoleNames().key("componentData"));
   };
 
   this->inspector->AddCreateCallback(

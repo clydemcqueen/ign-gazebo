@@ -23,7 +23,7 @@ import QtQuick.Controls.Styles 1.4
 import "qrc:/ComponentInspector"
 
 Rectangle {
-  id: stringComponent
+  id: systemInfoComponent
   height: header.height + content.height
   width: componentInspector.width
   color: index % 2 == 0 ? lightGrey : darkGrey
@@ -57,29 +57,18 @@ Rectangle {
         }
       }
 
-      // ListView {
-      //   id: column
-      //   height: 100
-      //   model: parent.model
-
-      //   delegate: Text {
-      //     height: 40
-      //     text: model.data[0]
-      //     leftPadding: 5
-      //     color: Material.theme == Material.Light ? "#444444" : "#bbbbbb"
-      //     font.pointSize: 12
-      //     anchors.centerIn: parent
-      //   }
-      // }
-
-      Text {
+      ListView {
         id: column
-        height: 40
-        text: model.data[0]
-        leftPadding: 5
-        color: Material.theme == Material.Light ? "#444444" : "#bbbbbb"
-        font.pointSize: 12
-        anchors.centerIn: parent
+        height: 200
+        model: theData
+
+        delegate: Text {
+          height: 40
+          text: modelData[0]
+          leftPadding: 5
+          color: Material.theme == Material.Light ? "#444444" : "#bbbbbb"
+          font.pointSize: 12
+        }
       }
     }
   }
